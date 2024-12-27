@@ -16,6 +16,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	files := []string{
 		"./ui/html/base.tmpl.html",
 		"./ui/html/pages/home.tmpl.html",
+		"./ui/html/partials/nav.tmpl.html",
 		}
 
 	ts, err := template.ParseFiles(files...)
@@ -25,7 +26,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = ts.ExecuteTemplate(w, "base", nil)
+	err = ts.ExecuteTemplate(w, "base", nil) // make the base html template visible on the route
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, "server error", http.StatusInternalServerError)
