@@ -13,7 +13,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	files := []string{
+	files := []string{ // directly fetches from the filesystem and not the file server(not to be confused)
 		"./ui/html/base.tmpl.html",
 		"./ui/html/pages/home.tmpl.html",
 		"./ui/html/partials/nav.tmpl.html",
@@ -32,7 +32,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "server error", http.StatusInternalServerError)
 		return
 	}
-	w.Write([]byte("Hello from Snippetbox"))
+	// w.Write([]byte("Hello from Snippetbox"))
 }
 func snippetView(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
