@@ -4,52 +4,47 @@ import (
 	"flag"
 	"log"
 	"net/http"
-	"path/filepath"
-	
+	"os"
 )
 
-type neuteredFileSystem struct {
-    fs http.FileSystem
-}
-
-func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
-    f, err := nfs.fs.Open(path)
-    if err != nil {
-        return nil, err
-    }
-
-    s, err := f.Stat()
-    if err != nil {
-        return nil, err
-    }
-    
-    if s.IsDir() {
-        index := filepath.Join(path, "index.html")
-        if _, err := nfs.fs.Open(index); err != nil {
-            closeErr := f.Close()
-            if closeErr != nil {
-                return nil, closeErr
-            }
-            return nil, err
-        }
-    }
-
-    return f, nil
-}    
+//  application struct
+type application struct {
+	errorLog *log.Logger
+	infoLog *log.Logger
+	}
 
 func main() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", home)
-	mux.HandleFunc("/snippet/view", snippetView)
-	mux.HandleFunc("/snippet/create", snippetCreate)
-	// fileServer := http.FileServer(http.Dir("./ui/static/")) //handle static files
-	// mux.Handle("/static/", http.StripPrefix("/static", fileServer))
-	fileServer := http.FileServer(neuteredFileSystem{http.Dir("./ui/static")})
-    mux.Handle("/static", http.NotFoundHandler())
-    mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+
+	//  making custom loggers in order to make the logs more readable and constant in whole project.
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Llongfile)
+
+	// creating a new application struct to make the custom loggers available to the handlers
+	app := &application{
+		errorLog: errorLog,
+		infoLog: infoLog,
+		}
+	
+	//  addr flag is passed as an argument when running the server	
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	flag.Parse()
-	log.Printf("Starting server on %s", *addr)
-	err := http.ListenAndServe(*addr, mux)
-	log.Fatal(err)
+
+	//  info logger
+    infoLog.Printf("Starting server on %s", *addr)
+
+	//  creating a new http.ServeMux defined in the routes.go
+	mux := app.routes()
+	
+	//  custom http.Server for making the custom loggers available
+ 	srv := &http.Server{
+		Addr: *addr,
+		ErrorLog: errorLog,
+		Handler: mux,
+		}
+
+	// Call the ListenAndServe() method on our new http.Server struct instead of  err := http.ListenAndServe(*addr, mux)
+	err := srv.ListenAndServe()
+
+	//  error logger
+	errorLog.Fatal(err)
 }
