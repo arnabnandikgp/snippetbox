@@ -30,7 +30,7 @@ func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
             return nil, err
         }
     }
-
+    
     return f, nil
 }    
 // The routes() method returns a servemux containing our application routes.
