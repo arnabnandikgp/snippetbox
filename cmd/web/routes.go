@@ -36,17 +36,17 @@ func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
 // The routes() method returns a servemux containing our application routes.
 func (app *application) routes() *http.ServeMux {
 	
-mux := http.NewServeMux()
+    mux := http.NewServeMux()
 
-//  passing the handler functions as methods of the application struct
-mux.HandleFunc("/", app.home)
-mux.HandleFunc("/snippet/view", app.snippetView)
-mux.HandleFunc("/snippet/create", app.snippetCreate)
+    //  passing the handler functions as methods of the application struct
+    mux.HandleFunc("/", app.home)
+    mux.HandleFunc("/snippet/view", app.snippetView)
+    mux.HandleFunc("/snippet/create", app.snippetCreate)
 
-//  file server added and allows access for directories with html files.
-fileServer := http.FileServer(neuteredFileSystem{http.Dir("./ui/static")})
-mux.Handle("/static", http.NotFoundHandler())
-mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+    //  file server added and allows access for directories with html files.
+    fileServer := http.FileServer(neuteredFileSystem{http.Dir("./ui/static")})
+    mux.Handle("/static", http.NotFoundHandler())
+    mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-return mux
+    return mux
 }

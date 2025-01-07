@@ -6,6 +6,7 @@ import (
 	"runtime/debug"
 )
 
+// error functions to be used throught the application
 func (app *application) serverError(w http.ResponseWriter, err error) {
 	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
 	app.errorLog.Println(trace)
