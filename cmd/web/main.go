@@ -1,17 +1,19 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"log"
 	"net/http"
 	"os"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 //  application struct
 type application struct {
 	errorLog *log.Logger
 	infoLog *log.Logger
-	}
+}
 
 func main() {
 
@@ -25,8 +27,13 @@ func main() {
 		infoLog: infoLog,
 		}
 	
+
+	//flags return pointers to the flag values
 	//  addr flag is passed as an argument when running the server	
 	addr := flag.String("addr", ":4000", "HTTP network address")
+	//  command line flag for the database DSN(mysql DSN(data source name))
+	dsn := flag.String("dsn", "web:20016@/snippetbox?parseTime=true","MySQL data source name")
+
 	flag.Parse()
 
 	//  info logger
@@ -34,6 +41,14 @@ func main() {
 
 	//  creating a new http.ServeMux defined in the routes.go
 	mux := app.routes()
+
+	db, err := openDB(*dsn)
+
+	if err != nil {
+		errorLog.Fatal(err) //fatal error if database can't be opened
+	}
+
+	defer db.Close()
 	
 	//  custom http.Server for making the custom loggers available
  	srv := &http.Server{
@@ -43,8 +58,20 @@ func main() {
 		}
 
 	// Call the ListenAndServe() method on our new http.Server struct instead of  err := http.ListenAndServe(*addr, mux)
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
+	errorLog.Fatal(err)
 
 	//  error logger
 	errorLog.Fatal(err)
+}
+
+func openDB(dsn string) (*sql.DB, error) {
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		return nil, err
+	}
+	if err = db.Ping(); err != nil {
+		return nil, err
+	}
+	return db, nil
 }
