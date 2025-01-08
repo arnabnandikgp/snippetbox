@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	// "html/template"
+	"html/template"
 	"github.com/arnabnandikgp/snippetbox/internal/models"
 	"errors"
 )
@@ -38,7 +38,6 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 	// err = ts.ExecuteTemplate(w, "base", nil) // make the base html template visible on the route
 	// if err != nil {
-
 	// 	app.serverError(w, err) // will be logged by the custom logger
 	// 	http.Error(w, "server error", http.StatusInternalServerError)
 	// 	return
@@ -62,7 +61,28 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		}
 		return 
 	}
-	fmt.Fprintf(w, "%+v", snippet)
+
+	data := &templateData{
+		Snippet : snippet,
+	}
+
+	files := []string{
+		"./ui/html/base.tmpl.html",
+		"./ui/html/partials/nav.tmpl.html",
+		"./ui/html/pages/view.tmpl.html",
+	}
+	// Parse the template files...
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	err = ts.ExecuteTemplate(w, "base", data)
+	if err != nil {
+		app.serverError(w, err)
+	}
+	// fmt.Fprintf(w, "%+v", snippet)
 	// fmt.Fprintf(w, "Display a specific snippet with ID %d...", id)
 }
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
