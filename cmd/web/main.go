@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"github.com/arnabnandikgp/snippetbox/internal/models"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -13,6 +14,7 @@ import (
 type application struct {
 	errorLog *log.Logger
 	infoLog *log.Logger
+	snippets *models.SnippetModel
 }
 
 func main() {
@@ -20,13 +22,6 @@ func main() {
 	//  making custom loggers in order to make the logs more readable and constant in whole project.
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Llongfile)
-
-	// creating a new application struct to make the custom loggers available to the handlers
-	app := &application{
-		errorLog: errorLog,
-		infoLog: infoLog,
-		}
-	
 
 	//flags return pointers to the flag values
 	//  addr flag is passed as an argument when running the server	
@@ -36,13 +31,21 @@ func main() {
 
 	flag.Parse()
 
+	// the *sql.DB object is stored in db 
+	db, err := openDB(*dsn)
+
+	// creating a new application struct to make the custom loggers available to the handlers
+	app := &application{
+		errorLog: errorLog,
+		infoLog: infoLog,
+		snippets : &models.SnippetModel{DB: db},
+	}
+
 	//  info logger
     infoLog.Printf("Starting server on %s", *addr)
 
 	//  creating a new http.ServeMux defined in the routes.go
 	mux := app.routes()
-
-	db, err := openDB(*dsn)
 
 	if err != nil {
 		errorLog.Fatal(err) //fatal error if database can't be opened
