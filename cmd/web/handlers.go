@@ -20,28 +20,32 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 		return
 	}
-	for _, snippet := range snippets {
-		fmt.Fprintf(w, "%+v\n", snippet)
+	// for _, snippet := range snippets {
+	// 	fmt.Fprintf(w, "%+v\n", snippet)
+	// }
+	files := []string{ // directly fetches from the filesystem and not the file server(not to be confused)
+		"./ui/html/base.tmpl.html",
+		"./ui/html/pages/home.tmpl.html",
+		"./ui/html/partials/nav.tmpl.html",
+		}
+
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, err) // will be logged by the custom logger
+		http.Error(w, "server error", http.StatusInternalServerError)
+		return
 	}
-	// files := []string{ // directly fetches from the filesystem and not the file server(not to be confused)
-	// 	"./ui/html/base.tmpl.html",
-	// 	"./ui/html/pages/home.tmpl.html",
-	// 	"./ui/html/partials/nav.tmpl.html",
-	// 	}
 
-	// ts, err := template.ParseFiles(files...)
-	// if err != nil {
-	// 	app.serverError(w, err) // will be logged by the custom logger
-	// 	http.Error(w, "server error", http.StatusInternalServerError)
-	// 	return
-	// }
+	data := &templateData{
+		Snippets: snippets,
+	}
 
-	// err = ts.ExecuteTemplate(w, "base", nil) // make the base html template visible on the route
-	// if err != nil {
-	// 	app.serverError(w, err) // will be logged by the custom logger
-	// 	http.Error(w, "server error", http.StatusInternalServerError)
-	// 	return
-	// }
+	err = ts.ExecuteTemplate(w, "base",data) // make the base html template visible on the route
+	if err != nil {
+		app.serverError(w, err) // will be logged by the custom logger
+		http.Error(w, "server error", http.StatusInternalServerError)
+		return
+	}
 	// w.Write([]byte("Hello from Snippetbox"))
 }
 func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
