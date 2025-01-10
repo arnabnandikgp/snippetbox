@@ -8,6 +8,7 @@ import (
 	"os"
 	"github.com/arnabnandikgp/snippetbox/internal/models"
 	_ "github.com/go-sql-driver/mysql"
+	"html/template"
 )
 
 //  application struct
@@ -15,6 +16,7 @@ type application struct {
 	errorLog *log.Logger
 	infoLog *log.Logger
 	snippets *models.SnippetModel
+	templateCache map[string]*template.Template
 }
 
 func main() {
@@ -27,9 +29,14 @@ func main() {
 	//  addr flag is passed as an argument when running the server	
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	//  command line flag for the database DSN(mysql DSN(data source name))
-	dsn := flag.String("dsn", "web:20016@/snippetbox?parseTime=true","MySQL data source name")
+	dsn := flag.String("dsn", "web:20016@/snippetbox?parseTime=true", "MySQL data source name")
 
 	flag.Parse()
+
+	templateCache, err := newTemplateCache()
+	if err!= nil {
+		errorLog.Fatal(err)
+	}
 
 	// the *sql.DB object is stored in db 
 	db, err := openDB(*dsn)
@@ -39,6 +46,7 @@ func main() {
 		errorLog: errorLog,
 		infoLog: infoLog,
 		snippets : &models.SnippetModel{DB: db},
+		templateCache: templateCache,
 	}
 
 	//  info logger

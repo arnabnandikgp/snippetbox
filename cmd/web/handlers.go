@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"html/template"
+	// "html/template"
 	"github.com/arnabnandikgp/snippetbox/internal/models"
 	"errors"
 )
@@ -20,33 +20,10 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 		return
 	}
-	// for _, snippet := range snippets {
-	// 	fmt.Fprintf(w, "%+v\n", snippet)
-	// }
-	files := []string{ // directly fetches from the filesystem and not the file server(not to be confused)
-		"./ui/html/base.tmpl.html",
-		"./ui/html/pages/home.tmpl.html",
-		"./ui/html/partials/nav.tmpl.html",
-		}
+	data := app.newTemplateData(r)
+	data.Snippets = snippets
 
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, err) // will be logged by the custom logger
-		http.Error(w, "server error", http.StatusInternalServerError)
-		return
-	}
-
-	data := &templateData{
-		Snippets: snippets,
-	}
-
-	err = ts.ExecuteTemplate(w, "base",data) // make the base html template visible on the route
-	if err != nil {
-		app.serverError(w, err) // will be logged by the custom logger
-		http.Error(w, "server error", http.StatusInternalServerError)
-		return
-	}
-	// w.Write([]byte("Hello from Snippetbox"))
+	app.render(w, http.StatusOK, "home.tmpl.html", data)
 }
 func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
@@ -66,26 +43,30 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		return 
 	}
 
-	data := &templateData{
-		Snippet : snippet,
-	}
+	// data := &templateData{
+	// 	Snippet : snippet,
+	// }
 
-	files := []string{
-		"./ui/html/base.tmpl.html",
-		"./ui/html/partials/nav.tmpl.html",
-		"./ui/html/pages/view.tmpl.html",
-	}
-	// Parse the template files...
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
+	// files := []string{
+	// 	"./ui/html/base.tmpl.html",
+	// 	"./ui/html/partials/nav.tmpl.html",
+	// 	"./ui/html/pages/view.tmpl.html",
+	// }
+	// // Parse the template files...
+	// ts, err := template.ParseFiles(files...)
+	// if err != nil {
+	// 	app.serverError(w, err)
+	// 	return
+	// }
 
-	err = ts.ExecuteTemplate(w, "base", data)
-	if err != nil {
-		app.serverError(w, err)
-	}
+	// err = ts.ExecuteTemplate(w, "base", data)
+	// if err != nil {
+	// 	app.serverError(w, err)
+	// }
+
+	data := app.newTemplateData(r)
+	data.Snippet = snippet
+	app.render(w, http.StatusOK,"view.tmpl.html", data)
 	// fmt.Fprintf(w, "%+v", snippet)
 	// fmt.Fprintf(w, "Display a specific snippet with ID %d...", id)
 }
