@@ -1,15 +1,15 @@
 package main
 
 import (
+	"github.com/arnabnandikgp/snippetbox/internal/models"
 	"html/template"
 	"path/filepath"
 	"time"
-	"github.com/arnabnandikgp/snippetbox/internal/models"
 )
 
 type templateData struct {
-	Snippet  *models.Snippet
-	Snippets []*models.Snippet
+	Snippet     *models.Snippet
+	Snippets    []*models.Snippet
 	CurrentYear int
 }
 

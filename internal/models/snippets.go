@@ -2,8 +2,8 @@ package models
 
 import (
 	"database/sql"
-	"time"
 	"errors"
+	"time"
 )
 
 type Snippet struct { // for the purpose of fetching, storing and sending data from the server to frontend services
@@ -54,11 +54,10 @@ func (m *SnippetModel) Get(id int) (*Snippet, error) {
 	return s, nil
 }
 
-
 func (m *SnippetModel) Latest() ([]*Snippet, error) {
-	stmt :=`SELECT id, title, content, created, expires FROM snippets
+	stmt := `SELECT id, title, content, created, expires FROM snippets
 			WHERE expires > UTC_TIMESTAMP() ORDER BY id DESC LIMIT 10`
-	
+
 	rows, err := m.DB.Query(stmt)
 	if err != nil {
 		return nil, err
@@ -81,4 +80,3 @@ func (m *SnippetModel) Latest() ([]*Snippet, error) {
 	return snippets, err
 
 }
-

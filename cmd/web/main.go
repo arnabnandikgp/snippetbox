@@ -3,19 +3,19 @@ package main
 import (
 	"database/sql"
 	"flag"
-	"log"
-	"net/http"
-	"os"
 	"github.com/arnabnandikgp/snippetbox/internal/models"
 	_ "github.com/go-sql-driver/mysql"
 	"html/template"
+	"log"
+	"net/http"
+	"os"
 )
 
-//  application struct
+// application struct
 type application struct {
-	errorLog *log.Logger
-	infoLog *log.Logger
-	snippets *models.SnippetModel
+	errorLog      *log.Logger
+	infoLog       *log.Logger
+	snippets      *models.SnippetModel
 	templateCache map[string]*template.Template
 }
 
@@ -25,8 +25,8 @@ func main() {
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Llongfile)
 
-	//flags return pointers to the flag values
-	//  addr flag is passed as an argument when running the server	
+	//  flags return pointers to the flag values
+	//  addr flag is passed as an argument when running the server
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	//  command line flag for the database DSN(mysql DSN(data source name))
 	dsn := flag.String("dsn", "web:20016@/snippetbox?parseTime=true", "MySQL data source name")
@@ -34,23 +34,23 @@ func main() {
 	flag.Parse()
 
 	templateCache, err := newTemplateCache()
-	if err!= nil {
+	if err != nil {
 		errorLog.Fatal(err)
 	}
 
-	// the *sql.DB object is stored in db 
+	// the *sql.DB object is stored in db
 	db, err := openDB(*dsn)
 
 	// creating a new application struct to make the custom loggers available to the handlers
 	app := &application{
-		errorLog: errorLog,
-		infoLog: infoLog,
-		snippets : &models.SnippetModel{DB: db},
+		errorLog:      errorLog,
+		infoLog:       infoLog,
+		snippets:      &models.SnippetModel{DB: db},
 		templateCache: templateCache,
 	}
 
 	//  info logger
-    infoLog.Printf("Starting server on %s", *addr)
+	infoLog.Printf("Starting server on %s", *addr)
 
 	//  creating a new http.ServeMux defined in the routes.go
 	mux := app.routes()
@@ -60,13 +60,13 @@ func main() {
 	}
 
 	defer db.Close()
-	
+
 	//  custom http.Server for making the custom loggers available
- 	srv := &http.Server{
-		Addr: *addr,
+	srv := &http.Server{
+		Addr:     *addr,
 		ErrorLog: errorLog,
-		Handler: mux,
-		}
+		Handler:  mux,
+	}
 
 	// Call the ListenAndServe() method on our new http.Server struct instead of  err := http.ListenAndServe(*addr, mux)
 	err = srv.ListenAndServe()
