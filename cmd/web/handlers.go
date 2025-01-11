@@ -5,17 +5,12 @@ import (
 	"net/http"
 	"strconv"
 	// "html/template"
+	"errors"
 	"github.com/arnabnandikgp/snippetbox/internal/models"
 	"github.com/julienschmidt/httprouter"
-	"errors"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
-	// if r.URL.Path != "/" {
-	// 	app.notFound(w)
-	// 	return
-	// }
-
 	snippets, err := app.snippets.Latest()
 	if err != nil {
 		app.serverError(w, err)
@@ -43,7 +38,7 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		} else {
 			app.serverError(w, err)
 		}
-		return 
+		return
 	}
 
 	// data := &templateData{
@@ -69,19 +64,23 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 
 	data := app.newTemplateData()
 	data.Snippet = snippet
-	app.render(w, http.StatusOK,"view.tmpl.html", data)
+	app.render(w, http.StatusOK, "view.tmpl.html", data)
 }
 
-func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
-	// if r.Method != http.MethodPost {
-	// 	w.Header().Set("Allow", http.MethodPost)
-	// 	app.clientError(w, http.StatusMethodNotAllowed)
-	// 	return
-	// }
+func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
 
-	title := "O snail"
-	content :="O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– KobayashiIssa"
-	expires := 7
+	title := r.PostForm.Get("title")
+	content := r.PostForm.Get("content")
+	expires, err := strconv.Atoi(r.PostForm.Get("expires"))
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
 
 	id, err := app.snippets.Insert(title, content, expires)
 	if err != nil {
@@ -89,10 +88,10 @@ func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, fmt.Sprintf("/snippet/view?id=%d", id), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/snippet/view/%d", id), http.StatusSeeOther)
 }
 
 func (app *application) snippetCreateForm(w http.ResponseWriter, r *http.Request) {
-
-	w.Write([]byte("display the form for creating new snippet, and the data from the form here will be used in the above handler"))
+	data := app.newTemplateData()
+	app.render(w, http.StatusOK, "create.tmpl.html", data)
 }
