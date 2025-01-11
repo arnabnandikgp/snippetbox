@@ -34,7 +34,7 @@ func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
     return f, nil
 }    
 // The routes() method returns a servemux containing our application routes.
-func (app *application) routes() *http.ServeMux {
+func (app *application) routes() http.Handler {
 	
     mux := http.NewServeMux()
 
@@ -48,5 +48,5 @@ func (app *application) routes() *http.ServeMux {
     mux.Handle("/static", http.NotFoundHandler())
     mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-    return (mux)
+    return app.recoverPanic(app.logRequest(secureHeaders(mux)))
 }

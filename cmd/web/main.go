@@ -70,7 +70,6 @@ func main() {
 
 	// Call the ListenAndServe() method on our new http.Server struct instead of  err := http.ListenAndServe(*addr, mux)
 	err = srv.ListenAndServe()
-	errorLog.Fatal(err)
 
 	//  error logger
 	errorLog.Fatal(err)
