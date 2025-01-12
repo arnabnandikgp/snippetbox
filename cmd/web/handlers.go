@@ -113,6 +113,7 @@ func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request
 	http.Redirect(w, r, fmt.Sprintf("/snippet/view/%d", id), http.StatusSeeOther)
 }
 
+// renders the webpage for creating a new snippet form
 func (app *application) snippetCreateForm(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData()
 	app.render(w, http.StatusOK, "create.tmpl.html", data)
