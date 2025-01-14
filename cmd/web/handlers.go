@@ -22,6 +22,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 	app.render(w, http.StatusOK, "home.tmpl.html", data)
 }
+
 func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	params := httprouter.ParamsFromContext(r.Context())
 
@@ -41,7 +42,7 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-
+	// commented code for parsing and executing a template(shifted to render method)
 	// data := &templateData{
 	// 	Snippet : snippet,
 	// }
