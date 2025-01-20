@@ -51,12 +51,14 @@ func (app *application) routes() http.Handler {
     // mux.Handle("/static", http.NotFoundHandler())
     // mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-    //  passing the handler functions as methods of the application struct
-    router.HandlerFunc(http.MethodGet, "/", app.home)
-    router.HandlerFunc(http.MethodGet, "/snippet/view/:id", app.snippetView)
-    router.HandlerFunc(http.MethodGet, "/snippet/create", app.snippetCreateForm)
-    router.HandlerFunc(http.MethodPost, "/snippet/create", app.snippetCreatePost)
+    // add session management middleware
+    dynamic := alice.New(app.sessionManager.LoadAndSave)
 
+    //  passing the handler functions as methods of the application struct
+    router.Handler(http.MethodGet, "/", dynamic.ThenFunc(app.home))
+    router.Handler(http.MethodGet, "/snippet/view/:id", dynamic.ThenFunc(app.snippetView))
+    router.Handler(http.MethodGet, "/snippet/create", dynamic.ThenFunc(app.snippetCreateForm))
+    router.Handler(http.MethodPost, "/snippet/create", dynamic.ThenFunc(app.snippetCreatePost))
     standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 
     return standard.Then(router)
