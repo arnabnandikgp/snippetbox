@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"database/sql"
 	"flag"
 	"github.com/alexedwards/scs/mysqlstore"
@@ -53,6 +54,8 @@ func main() {
 	sessionManager.Store = mysqlstore.New(db)
 	sessionManager.Lifetime = 12 * time.Hour
 
+	sessionManager.Cookie.Secure = true
+
 	// creating a new application struct to make the custom loggers available to the handlers
 	app := &application{
 		errorLog:       errorLog,
@@ -61,6 +64,10 @@ func main() {
 		templateCache:  templateCache,
 		formDecoder:    formDecoder,
 		sessionManager: sessionManager,
+	}
+
+	tlsConfig := &tls.Config{
+		CurvePreferences: []tls.CurveID{tls.X25519, tls.CurveP256},
 	}
 
 	//  info logger
@@ -77,13 +84,18 @@ func main() {
 
 	//  custom http.Server for making the custom loggers available
 	srv := &http.Server{
-		Addr:     *addr,
-		ErrorLog: errorLog,
-		Handler:  mux,
+		Addr:      *addr,
+		ErrorLog:  errorLog,
+		Handler:   mux,
+		TLSConfig: tlsConfig,
+		IdleTimeout: time.Minute,
+		ReadTimeout: 5 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
 
 	// Call the ListenAndServe() method on our new http.Server struct instead of  err := http.ListenAndServe(*addr, mux)
-	err = srv.ListenAndServe()
+	// err = srv.ListenAndServe()
+	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
 
 	//  error logger
 	errorLog.Fatal(err)
