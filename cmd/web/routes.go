@@ -53,7 +53,7 @@ func (app *application) routes() http.Handler {
 	// mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	// add session management middleware
-	dynamic := alice.New(app.sessionManager.LoadAndSave)
+	dynamic := alice.New(app.sessionManager.LoadAndSave, noSurf)
 
 	//  passing the handler functions as methods of the application struct
 	router.Handler(http.MethodGet, "/", dynamic.ThenFunc(app.home))
