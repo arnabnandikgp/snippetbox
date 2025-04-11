@@ -1,0 +1,109 @@
+--- Startup times for process: Primary/TUI ---
+
+times in msec
+ clock   self+sourced   self:  sourced script
+ clock   elapsed:              other lines
+
+000.001  000.001: --- NVIM STARTING ---
+000.073  000.072: event init
+000.219  000.146: early init
+000.558  000.339: locale set
+000.600  000.042: init first window
+001.015  000.415: inits 1
+001.020  000.005: window checked
+001.022  000.002: parsing arguments
+001.544  000.041  000.041: require('vim.shared')
+001.629  000.042  000.042: require('vim.inspect')
+001.681  000.040  000.040: require('vim._options')
+001.682  000.135  000.053: require('vim._editor')
+001.684  000.208  000.032: require('vim._init_packages')
+001.686  000.456: init lua interpreter
+002.049  000.363: --- NVIM STARTED ---
+
+--- Startup times for process: Embedded ---
+
+times in msec
+ clock   self+sourced   self:  sourced script
+ clock   elapsed:              other lines
+
+000.000  000.000: --- NVIM STARTING ---
+000.045  000.045: event init
+000.124  000.079: early init
+000.347  000.223: locale set
+000.372  000.025: init first window
+000.611  000.239: inits 1
+000.624  000.013: window checked
+000.625  000.002: parsing arguments
+001.019  000.033  000.033: require('vim.shared')
+001.087  000.034  000.034: require('vim.inspect')
+001.128  000.031  000.031: require('vim._options')
+001.130  000.108  000.044: require('vim._editor')
+001.132  000.167  000.026: require('vim._init_packages')
+001.133  000.340: init lua interpreter
+002.779  001.646: expanding arguments
+002.794  000.015: inits 2
+003.028  000.234: init highlight
+003.029  000.001: waiting for UI
+003.143  000.114: done waiting for UI
+003.147  000.004: clear screen
+003.220  000.011  000.011: require('vim.keymap')
+004.180  001.031  001.019: require('vim._defaults')
+004.181  000.004: init default mappings & autocommands
+005.613  000.246  000.246: sourcing /Users/arnabnandi/Downloads/nvim-macos-arm64/share/nvim/runtime/ftplugin.vim
+005.856  000.171  000.171: sourcing /Users/arnabnandi/Downloads/nvim-macos-arm64/share/nvim/runtime/indent.vim
+006.908  000.300  000.300: require('core.utils')
+008.221  001.091  001.091: require('plugins.configs.lazy_nvim')
+008.693  000.469  000.469: require('core.mappings')
+008.695  001.785  000.225: require('core.default_config')
+009.555  000.021  000.021: require('vim.fs')
+010.033  003.870  001.763: require('core')
+011.380  001.237  001.237: sourcing /Users/arnabnandi/.local/share/nvim/site/autoload/plug.vim
+012.486  000.144  000.144: sourcing /Applications/Ghostty.app/Contents/Resources/ghostty/../nvim/site/ftdetect/ghostty.vim
+012.504  000.493  000.350: sourcing /Users/arnabnandi/Downloads/nvim-macos-arm64/share/nvim/runtime/filetype.lua
+012.568  000.007  000.007: sourcing /Users/arnabnandi/Downloads/nvim-macos-arm64/share/nvim/runtime/ftplugin.vim
+012.622  000.005  000.005: sourcing /Users/arnabnandi/Downloads/nvim-macos-arm64/share/nvim/runtime/indent.vim
+012.999  000.107  000.107: sourcing /Users/arnabnandi/Downloads/nvim-macos-arm64/share/nvim/runtime/syntax/synload.vim
+013.052  000.362  000.255: sourcing /Users/arnabnandi/Downloads/nvim-macos-arm64/share/nvim/runtime/syntax/syntax.vim
+014.880  000.300  000.300: require('lazy')
+014.901  000.014  000.014: require('ffi')
+015.251  000.323  000.323: require('vim.uri')
+015.263  000.359  000.036: require('vim.loader')
+015.775  000.496  000.496: require('lazy.stats')
+016.100  000.293  000.293: require('lazy.core.util')
+016.461  000.359  000.359: require('lazy.core.config')
+017.054  000.247  000.247: require('lazy.core.handler')
+017.807  000.219  000.219: require('lazy.pkg')
+017.809  000.477  000.258: require('lazy.core.meta')
+017.813  000.759  000.282: require('lazy.core.plugin')
+017.818  001.356  000.350: require('lazy.core.loader')
+018.926  000.241  000.241: require('lazy.core.fragments')
+021.003  000.114  000.114: require('lazy.core.handler.event')
+021.005  000.311  000.197: require('lazy.core.handler.ft')
+021.145  000.138  000.138: require('lazy.core.handler.cmd')
+021.261  000.114  000.114: require('lazy.core.handler.keys')
+022.650  000.210  000.210: sourcing /Users/arnabnandi/Downloads/nvim-macos-arm64/share/nvim/runtime/filetype.lua
+024.577  000.641  000.641: require('nvchad.tabufline.lazyload')
+024.585  001.504  000.863: require('nvchad')
+024.586  001.705  000.201: sourcing /Users/arnabnandi/.local/share/nvim/lazy/ui/plugin/init.lua
+024.977  000.215  000.215: sourcing /Users/arnabnandi/Downloads/nvim-macos-arm64/share/nvim/runtime/plugin/editorconfig.lua
+025.157  000.129  000.129: sourcing /Users/arnabnandi/Downloads/nvim-macos-arm64/share/nvim/runtime/plugin/man.lua
+025.390  000.188  000.188: sourcing /Users/arnabnandi/Downloads/nvim-macos-arm64/share/nvim/runtime/plugin/matchparen.vim
+025.516  000.084  000.084: sourcing /Users/arnabnandi/Downloads/nvim-macos-arm64/share/nvim/runtime/plugin/osc52.lua
+025.696  000.137  000.137: sourcing /Users/arnabnandi/Downloads/nvim-macos-arm64/share/nvim/runtime/plugin/shada.vim
+025.819  000.076  000.076: sourcing /Users/arnabnandi/Downloads/nvim-macos-arm64/share/nvim/runtime/plugin/spellfile.vim
+025.962  012.571  005.846: require('plugins')
+025.963  019.954  001.408: sourcing /Users/arnabnandi/.config/nvim/init.lua
+025.968  001.415: sourcing vimrc file(s)
+025.972  000.005: inits 3
+027.724  001.752: reading ShaDa
+027.773  000.049: opening buffers
+027.827  000.054: BufEnter autocommands
+027.829  000.001: editing files in windows
+027.846  000.017: VimEnter autocommands
+027.882  000.036: UIEnter autocommands
+028.190  000.242  000.242: sourcing /Users/arnabnandi/Downloads/nvim-macos-arm64/share/nvim/runtime/autoload/provider/clipboard.vim
+028.193  000.070: before starting main loop
+028.699  000.402  000.402: require('nvchad.statusline.default')
+028.782  000.187: first screen update
+028.783  000.001: --- NVIM STARTED ---
+
